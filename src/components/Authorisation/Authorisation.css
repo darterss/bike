@@ -1,0 +1,10 @@
+.authorisation_form {
+    width: 30%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.authorisation_input {
+    margin: 1% 0;
+}
