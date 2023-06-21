@@ -1,5 +1,4 @@
-import {ADD_EMPLOYEE, SET_AUTHORIZED} from "./actionTypes";
-import axios from "axios";
+import {GET_EMPLOYEES, SET_AUTHORIZED} from "./actionTypes";
 
 export function setAuthorized(authorized) {
     return {
@@ -7,18 +6,9 @@ export function setAuthorized(authorized) {
         login: authorized
     }
 }
-
-export const addEmployee = (newAccount) => {
-    console.log(newAccount)
-    return dispatch => {
-        axios
-            .post('https://sf-final-project-be.herokuapp.com/api/auth/sign_in', newAccount)
-            .then(res => console.log(res.data.data))
-    }
-}
-function addEmployeeToStore(newAccount) {
+export function getEmployees (data) {
     return {
-        type: ADD_EMPLOYEE,
-        payload: newAccount
+        type: GET_EMPLOYEES,
+        data: data
     }
 }
