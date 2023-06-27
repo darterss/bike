@@ -1,15 +1,15 @@
 import BackButton from "../BackButton";
 import {connect} from "react-redux";
 import {useEffect} from "react";
-import {getEmployees} from "../../redux/actions";
+import {setEmployees} from "../../redux/actions";
 import {Link} from "react-router-dom";
 import {deleteOfficer, getAllOfficers} from "../../API/apiRequests";
 function ResponsibleStaff(props) {
     useEffect(() => {
-        getAllOfficers(props.getEmployees)
+        getAllOfficers(props.setEmployees);
     }, [])
     function handleClick(e, id) {
-        deleteOfficer(id, props.getEmployees)
+        deleteOfficer(id, props.setEmployees)
     }
     return (
         <>
@@ -27,7 +27,7 @@ function ResponsibleStaff(props) {
                 <tbody>
             { (props.employees.length) ? props.employees.map( (emp) => (
                        <tr key={emp._id}>
-                           <td><Link to={emp._id}>{emp.email}</Link></td>
+                           <td><Link to={'/responsible_staff/'+emp._id}>{emp.email}</Link></td>
                            <td>{emp.firstName}</td>
                            <td>{emp.lastName}</td>
                            <td>{emp.approved ? 'Да' : 'Нет'}</td>
@@ -43,10 +43,9 @@ function ResponsibleStaff(props) {
     )
 }
 const mapStateToProps = state => ({
-    token: state.app.token,
     employees: state.posts.employees
 })
 const mapDispatchToProps = {
-    getEmployees
+    setEmployees
 }
 export default connect (mapStateToProps, mapDispatchToProps)(ResponsibleStaff)

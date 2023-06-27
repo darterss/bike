@@ -7,7 +7,10 @@
 
 .form_input {
     margin: 1% 10px;
+}
 
+.form_select {
+    margin: 1% 10px;
 }
 
 .form label {

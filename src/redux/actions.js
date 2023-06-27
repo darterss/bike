@@ -1,4 +1,4 @@
-import {GET_EMPLOYEES, SET_AUTHORIZED} from "./actionTypes";
+import {SET_EMPLOYEES, SET_AUTHORIZED, SET_CASES} from "./actionTypes";
 
 export function setAuthorized(authorized) {
     return {
@@ -6,9 +6,15 @@ export function setAuthorized(authorized) {
         login: authorized
     }
 }
-export function getEmployees (data) {
+export function setEmployees (data) {
     return {
-        type: GET_EMPLOYEES,
+        type: SET_EMPLOYEES,
+        data: data
+    }
+}
+export function setCases (data) {
+    return {
+        type: SET_CASES,
         data: data
     }
 }

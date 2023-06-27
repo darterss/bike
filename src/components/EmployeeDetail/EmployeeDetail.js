@@ -1,11 +1,12 @@
-import {getEmployees} from "../../redux/actions";
+import {setEmployees} from "../../redux/actions";
 import {connect} from "react-redux";
 import BackButton from "../BackButton";
-import {useNavigate} from "react-router-dom";
+import {useNavigate, useParams} from "react-router-dom";
 import {changeOfficerData} from "../../API/apiRequests";
 
 function EmployeeDetail(props){
-    const indexOfEmployee = props.employees.findIndex((item) => item._id === props.id) // поиск индекса работника в массиве
+    const {id} = useParams()
+    const indexOfEmployee = props.employees.findIndex((item) => item._id === id) // поиск индекса работника в state
     const employee = props.employees[indexOfEmployee]
     const navigate = useNavigate()
 
@@ -17,13 +18,13 @@ function EmployeeDetail(props){
             approved: e.target.approved.checked
         }
         if (e.target.password.value !== '')  user = {...user, password: e.target.password.value}
-        changeOfficerData(props.id, user, navigate)
+        changeOfficerData(id, user, navigate)
     }
     return(
         <>
             <form className={'form'} onSubmit={handleSubmit}>
                 <label>
-                    <input name={'email'} className={'form_input'} type={'email'} required={true}
+                    <input name={'email'} className={'form_input'} type={'email'}
                            defaultValue={employee.email} disabled={true}/>
                     e-mail
                 </label>
@@ -52,10 +53,9 @@ function EmployeeDetail(props){
 }
 
 const mapStateToProps = state => ({
-    token: state.app.token,
     employees: state.posts.employees
 })
 const mapDispatchToProps = {
-    getEmployees
+    setEmployees
 }
 export default connect (mapStateToProps, mapDispatchToProps)(EmployeeDetail)

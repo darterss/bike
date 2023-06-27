@@ -15,6 +15,9 @@
   .logo {
     animation: App-logo-spin infinite 20s linear;
   }
+    .logo:hover {
+        animation: App-logo-spin infinite 5s linear;
+    }
 }
 
 @keyframes App-logo-spin {

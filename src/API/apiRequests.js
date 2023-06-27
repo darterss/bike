@@ -1,10 +1,10 @@
 import axios from "axios";
 const headerFromLS = JSON.parse(localStorage.getItem('Auth'))
 
-export function getAllOfficers (getEmployees) {
+export function getAllOfficers (setEmployees) {
     axios
         .get(`https://sf-final-project-be.herokuapp.com/api/officers/`, headerFromLS)
-        .then(res => getEmployees(res.data.officers))         //////////////////   записываю данные с сервера в state
+        .then(res => setEmployees(res.data.officers))         //////////////////   записываю данные с сервера в state
         .catch(err => alert(err.response.data.message))
 }
 export function deleteOfficer (id, getEmployees) {
@@ -34,11 +34,36 @@ export function changeOfficerData (id, user, navigate) {
         })
         .catch(err => alert(err.response.data.message))
 }
+export function changeCaseData (id, editedCase, navigate) {
+    axios
+        .put(`https://sf-final-project-be.herokuapp.com/api/cases/${id}`, editedCase, headerFromLS)
+        .then(res => {
+            if (res.status === 200) navigate(-1)
+        })
+        .catch(err => alert(err.response.data.message))
+}
 export function signUp (newEmployee, navigate) {
     axios
         .post('https://sf-final-project-be.herokuapp.com/api/auth/sign_up', newEmployee)
         .then(res => {
             if (res.status === 200) navigate(-1)
         })
+        .catch(err => alert(err.response.data.message))
+}
+
+export function createCase (theft) {                 //      add catch//////////////////////////////////////////////
+    if (localStorage.getItem('Auth')) {
+        axios
+            .post('https://sf-final-project-be.herokuapp.com/api/cases/', theft, headerFromLS)
+    }
+    else {
+        axios
+            .post('https://sf-final-project-be.herokuapp.com/api/public/report', theft)
+    }
+}
+export function getAllCases (setCases) {
+    axios
+        .get(`https://sf-final-project-be.herokuapp.com/api/cases/`, headerFromLS)
+        .then(res => setCases(res.data.data))         //////////////////   записываю данные с сервера в state
         .catch(err => alert(err.response.data.message))
 }

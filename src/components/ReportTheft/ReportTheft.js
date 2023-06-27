@@ -1,42 +1,68 @@
-import {useSelector} from "react-redux";
+import {connect} from "react-redux";
 import './ReportTheft.css'
 import BackButton from "../BackButton";
-export default function ReportTheft() {
-    const authorized = useSelector(st => st.app.authorized)
+import {createCase, getAllOfficers} from "../../API/apiRequests";
+import {useEffect} from "react";
+import {setEmployees} from "../../redux/actions";
+function ReportTheft(props) {
+    useEffect(() => {
+        getAllOfficers(props.setEmployees)
+    }, [])
     function handleSubmit(e){
         e.preventDefault()
+        const employee = props.authorized && props.employees.find(emp => (emp.email === e.target.officer.value)) // объект работника из state
+        const theft = {
+            'ownerFullName': e.target.ownerFullName.value,
+            'licenseNumber': e.target.licenseNumber.value,
+            'type': e.target.typeOfBike.value,
+            'color': e.target.colorOfBike.value,
+            'date': e.target.dateOfTheft.value,
+            'description': e.target.description.value,
+            'officer': employee._id
+        }
+        createCase(theft)
     }
+
     return (
         <>
             <h1>Сообщение о краже</h1>
             <form className={'form'} onSubmit={handleSubmit}>
                 <label>
-                    <input className={'form_input'} type={'number'} required={true} autoFocus={true} />
+                    <input name={'licenseNumber'} className={'form_input'} type={'number'} required={true} autoFocus={true} />
                     Номер лицензии *
                 </label>
                 <label>
-                    <input className={'form_input'} type={'text'} required={true} />
+                    <input name={'ownerFullName'} className={'form_input'} type={'text'} required={true} />
                     ФИО клиента *
                 </label>
                 <label>
-                    <input className={'form_input'} type={'text'} required={true}/>
+                    <select name={'typeOfBike'} className={'form_select'} required={true}>
+                        <option>general</option>
+                        <option>sport</option>
+                    </select>
                     Тип велосипеда *
                 </label>
                 <label>
-                    <input className={'form_input'} type={'text'}/>
+                    <input name={'colorOfBike'} className={'form_input'} type={'text'}/>
                     Цвет велосипеда
                 </label>
                 <label>
-                    <input className={'form_input'} type={'datetime-local'}/>
+                    <input name={'dateOfTheft'} className={'form_input'} type={'datetime-local'}/>
                     Дата кражи
                 </label>
                 <label>
-                    <input className={'form_input'} type={'text'}/>
-                    Дополнительная информация
+                    <input name={'description'} className={'form_input'} type={'text'}/>
+                    Дополнительный комментарий
                 </label>
-                {authorized &&
+                {props.authorized &&
                     <label>
-                        <input className={'form_input'} type={'text'}/>
+                        <select name={'officer'} className={'form_select'}>
+                            {props.employees.map(emp => {
+                                if (emp.approved) return (
+                                <option key={emp._id}>{emp.email}</option>
+                                )
+                            })}
+                        </select>
                         Ответственный сотрудник
                     </label>
                 }
@@ -46,3 +72,11 @@ export default function ReportTheft() {
         </>
     )
 }
+const mapStateToProps = state => ({
+    authorized: state.app.authorized,
+    employees: state.posts.employees
+})
+const mapDispatchToProps = {
+    setEmployees
+}
+export default connect (mapStateToProps, mapDispatchToProps)(ReportTheft)
