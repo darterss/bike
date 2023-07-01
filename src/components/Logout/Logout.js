@@ -5,6 +5,7 @@ import {useNavigate} from "react-router-dom";
 
 function Logout (props) {
     const navigate = useNavigate()
+    const userName = localStorage.getItem('userName')
     function handleClick () {
         props.setAuthorized(false);
         localStorage.removeItem('Auth')
@@ -12,7 +13,7 @@ function Logout (props) {
     }
     return(
         <div className={'logout_wrapper'}>
-            <p>Username</p>
+            <p>{userName}</p>
             <button onClick={handleClick}>Выйти</button>
         </div>
     )

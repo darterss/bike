@@ -4,9 +4,11 @@ import BackButton from "../BackButton";
 import {createCase, getAllOfficers} from "../../API/apiRequests";
 import {useEffect} from "react";
 import {setEmployees} from "../../redux/actions";
+import {useNavigate} from "react-router-dom";
 function ReportTheft(props) {
+    const navigate = useNavigate()
     useEffect(() => {
-        getAllOfficers(props.setEmployees)
+        if (props.authorized) getAllOfficers(props.setEmployees)
     }, [])
     function handleSubmit(e){
         e.preventDefault()
@@ -18,9 +20,10 @@ function ReportTheft(props) {
             'color': e.target.colorOfBike.value,
             'date': e.target.dateOfTheft.value,
             'description': e.target.description.value,
-            'officer': employee._id
+            'officer': employee._id,
+            clientId: '08b81fe0-6aa8-4033-ac59-83d011f1aa37'
         }
-        createCase(theft)
+        createCase(theft, navigate)
     }
 
     return (
@@ -47,12 +50,12 @@ function ReportTheft(props) {
                     Цвет велосипеда
                 </label>
                 <label>
-                    <input name={'dateOfTheft'} className={'form_input'} type={'datetime-local'}/>
+                    <input name={'dateOfTheft'} className={'form_input'} type={'date'}/>
                     Дата кражи
                 </label>
                 <label>
                     <input name={'description'} className={'form_input'} type={'text'}/>
-                    Дополнительный комментарий
+                    Дополнительная информация
                 </label>
                 {props.authorized &&
                     <label>

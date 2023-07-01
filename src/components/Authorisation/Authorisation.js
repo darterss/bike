@@ -12,6 +12,7 @@ function Authorisation(props){
             password: e.target.password.value
         }
         signIn(props.setAuthorized, user)
+        localStorage.setItem('userName', user.email)
     }
 
     return(

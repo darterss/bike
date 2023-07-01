@@ -1,7 +1,7 @@
 import BackButton from "../BackButton";
 import {setCases} from "../../redux/actions";
 import {connect} from "react-redux";
-import {getAllCases} from "../../API/apiRequests";
+import {deleteCase, getAllCases} from "../../API/apiRequests";
 import {useEffect} from "react";
 import {Link} from "react-router-dom";
 function ListOfThefts(props) {
@@ -9,11 +9,11 @@ function ListOfThefts(props) {
         getAllCases(props.setCases)
     }, [])
     function handleClick(e, id) {
-        //deleteOfficer(id, props.setCases())////////////////////////////////////////////////////////////////////
+        deleteCase(id, props.setCases)
     }
     return (
         <>
-            <h2>СООБЩЕНИЯ О КРАЖАХ</h2>
+            <h1>Сообщения о кражах</h1>
             <h4>нажмите на номер лицензии для редактирования данных</h4>
             <table>
                 <thead>

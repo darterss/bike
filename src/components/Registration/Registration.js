@@ -42,6 +42,11 @@ function Registration(props) {
                     <input name={'lastName'} className={'form_input'} type={'text'}/>
                     Фамилия
                 </label>
+                <label>
+                    <input name={'clientId'} className={'form_input'} type={'text'}
+                           defaultValue={'08b81fe0-6aa8-4033-ac59-83d011f1aa37'} disabled={true} />
+                    ClientId
+                </label>
                 <button type={'submit'}>Зарегистрироваться</button>
             </form>
             <BackButton />

@@ -1,15 +1,13 @@
-import {setEmployees} from "../../redux/actions";
 import {connect} from "react-redux";
 import BackButton from "../BackButton";
 import {useNavigate, useParams} from "react-router-dom";
 import {changeOfficerData} from "../../API/apiRequests";
+import {getItemFromState} from "../../functions/functions";
 
 function EmployeeDetail(props){
-    const {id} = useParams()
-    const indexOfEmployee = props.employees.findIndex((item) => item._id === id) // поиск индекса работника в state
-    const employee = props.employees[indexOfEmployee]
+    const { id } = useParams()
+    const employee = getItemFromState(props.employees, id, 'employee')
     const navigate = useNavigate()
-
     function handleSubmit (e) {
         e.preventDefault()
         let user = {
@@ -22,11 +20,17 @@ function EmployeeDetail(props){
     }
     return(
         <>
+            <h1>Информация о сотруднике</h1>
             <form className={'form'} onSubmit={handleSubmit}>
                 <label>
                     <input name={'email'} className={'form_input'} type={'email'}
                            defaultValue={employee.email} disabled={true}/>
                     e-mail
+                </label>
+                <label>
+                    <input name={'clientId'} className={'form_input'} type={'text'}
+                           defaultValue={'08b81fe0-6aa8-4033-ac59-83d011f1aa37'} disabled={true} />
+                    ClientId
                 </label>
                 <label>
                     <input name={'password'} className={'form_input'} type={'password'}
@@ -55,7 +59,4 @@ function EmployeeDetail(props){
 const mapStateToProps = state => ({
     employees: state.posts.employees
 })
-const mapDispatchToProps = {
-    setEmployees
-}
-export default connect (mapStateToProps, mapDispatchToProps)(EmployeeDetail)
+export default connect (mapStateToProps)(EmployeeDetail)

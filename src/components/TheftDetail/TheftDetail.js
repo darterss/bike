@@ -1,21 +1,25 @@
-import {setCases, setEmployees} from "../../redux/actions";
+import {setEmployees} from "../../redux/actions";
 import {connect} from "react-redux";
 import BackButton from "../BackButton";
 import {useNavigate, useParams} from "react-router-dom";
 import {changeCaseData, getAllOfficers} from "../../API/apiRequests";
-import {useEffect} from "react";
+import {useEffect, useRef, useState} from "react";
+import {getItemFromState} from "../../functions/functions";
 
 function TheftDetail(props){
     const { id } = useParams()
-    const indexOfCase = props.cases.findIndex((item) => item._id === id) // поиск индекса сообщения о краже в state
-    const specCase = props.cases[indexOfCase]
+    const specCase = getItemFromState(props.cases, id, 'case')
     const navigate = useNavigate()
-
+    const [disable, setDisable] = useState(specCase.status !== 'done')
+    const ref = useRef()
     useEffect(() => {
         getAllOfficers(props.setEmployees)
     }, [])
-
-    function handleSubmit (e) {
+    function handleChange(e) {
+        if (e.target.value !== 'done') ref.current.value = ''
+        setDisable(e.target.value !== 'done');
+    }
+    function handleSubmit(e) {
         e.preventDefault()
         const employee = props.employees.find(emp => (emp.email === e.target.officer.value)) // объект работника из state
         let editedCase = {
@@ -33,10 +37,15 @@ function TheftDetail(props){
     }
     return(
         <>
+            <h1>Информация по краже</h1>
             <form className={'form'} onSubmit={handleSubmit}>
                 <label>
-                    <input name={'status'} className={'form_input'} type={'text'} required={true}
-                           defaultValue={specCase.status}/>
+                    <select name={'status'} className={'form_input'} type={'text'} required={true}
+                           defaultValue={specCase.status} onChange={handleChange}>
+                        <option>new</option>
+                        <option value={'in_progress'}>in progress</option>
+                        <option>done</option>
+                    </select>
                     Статус *
                 </label>
                 <label>
@@ -60,16 +69,16 @@ function TheftDetail(props){
                 <label>
                     <input name={'clientId'} className={'form_input'} type={'text'} defaultValue={specCase.clientId}
                     disabled={true} />
-                    clientId
+                    ClientId
                 </label>
                 <label>
-                    <input name={'createdAt'} className={'form_input'} type={'text'} defaultValue={specCase.createdAt}
-                           disabled={true} />
+                    <input name={'createdAt'} className={'form_input'} type={'text'}
+                           defaultValue={specCase.createdAt.substring(0,10)} disabled={true} />
                     Дата создания сообщения
                 </label>
                 <label>
-                    <input name={'updatedAt'} className={'form_input'} type={'text'} defaultValue={specCase.updatedAt}
-                           disabled={true} />
+                    <input name={'updatedAt'} className={'form_input'} type={'text'}
+                           defaultValue={specCase.updatedAt ? specCase.updatedAt.substring(0,10) : null} disabled={true} />
                     Дата обновления сообщения
                 </label>
                 <label>
@@ -98,7 +107,7 @@ function TheftDetail(props){
                 </label>
                 <label>
                     <input name={'resolution'} className={'form_input'} type={'text'}
-                           defaultValue={specCase.resolution} />
+                           defaultValue={specCase.resolution} disabled={disable} required={!disable} ref={ref}/>
                     Завершающий комментарий
                 </label>
                 <button type={'submit'}>Внести изменения</button>
@@ -112,7 +121,6 @@ const mapStateToProps = state => ({
     employees: state.posts.employees
 })
 const mapDispatchToProps = {
-    setCases,
     setEmployees
 }
 export default connect (mapStateToProps, mapDispatchToProps)(TheftDetail)
