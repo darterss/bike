@@ -13,13 +13,13 @@ import EmployeeDetail from "./components/EmployeeDetail/EmployeeDetail";
 import TheftDetail from "./components/TheftDetail/TheftDetail";
 function App(props) {
     return (
-        <div className="App">
+        <div className="app">
             <header className={'header'}>
                 <img alt={'logo'} src={logo} className={'logo'}/>
-                {!props.authorized && <Link to={'/'}><h2>Сервис проката велосипедов</h2></Link>}
-                {props.authorized && <Link to={'/list_of_thefts'}><h4>Сообщения о кражах</h4></Link>}
-                {props.authorized && <Link to="report_theft"><h4>Сообщить о краже</h4></Link>}
-                {props.authorized && <Link to={'/responsible_staff'}><h4>Ответственные сотрудники</h4></Link>}
+                <Link to={'/'}><span>Главная</span></Link>
+                {props.authorized && <Link to={'/list_of_thefts'}><span>Сообщения о кражах</span></Link>}
+                {props.authorized && <Link to="report_theft"><span>Сообщить о краже</span></Link>}
+                {props.authorized && <Link to={'/responsible_staff'}><span>Ответственные сотрудники</span></Link>}
                 {!props.authorized && <Authorisation/>}
                 {props.authorized && <Logout/>}
             </header>
@@ -37,11 +37,11 @@ function App(props) {
                         <Route index element={<ListOfThefts />} />
                         <Route path={":id"} element={<TheftDetail />} />
                     </Route>
-
                 </Routes>
 
             </main>
             <footer className={'footer'}>
+                <hr />
                 <a href={'mailto: darters@mail.ru'}>email: darters@mail.ru</a>
             </footer>
         </div>

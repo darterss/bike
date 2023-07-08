@@ -1,10 +1,11 @@
 import {Link} from "react-router-dom";
+import {connect} from "react-redux";
 
-export default function Home () {
+function Home (props) {
     return(
     <div>
         <h1>Сервис проката велосипедов</h1>
-        <h3>Авторизируйтесь, чтобы получить информацию о кражах</h3>
+        {!props.authorized && <h3>Авторизируйтесь, чтобы получить информацию о кражах</h3>}
         <h3>Здесь можете оставить сообщение о краже</h3>
         <Link to="report_theft">
             <button className={'button_theft'}>Сообщить о краже</button>
@@ -12,3 +13,10 @@ export default function Home () {
     </div>
     )
 }
+
+function mapStateToProps(state) {
+    return {
+        authorized: state.app.authorized
+    }
+}
+export default connect(mapStateToProps)(Home)

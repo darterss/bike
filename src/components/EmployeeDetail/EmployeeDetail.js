@@ -1,12 +1,18 @@
 import {connect} from "react-redux";
 import BackButton from "../BackButton";
 import {useNavigate, useParams} from "react-router-dom";
-import {changeOfficerData} from "../../API/apiRequests";
-import {getItemFromState} from "../../functions/functions";
+import {changeOfficerData, getOfficer} from "../../API/apiRequests";
+import {setEmployee} from "../../redux/actions";
+import {useEffect} from "react";
 
 function EmployeeDetail(props){
     const { id } = useParams()
-    const employee = getItemFromState(props.employees, id, 'employee')
+    //const employee = getItemFromState(props.employees, id, 'employee')
+    useEffect(() => {
+        getOfficer(id, props.setEmployee)
+        return () => props.setEmployee({})
+    }, []
+    )
     const navigate = useNavigate()
     function handleSubmit (e) {
         e.preventDefault()
@@ -18,13 +24,15 @@ function EmployeeDetail(props){
         if (e.target.password.value !== '')  user = {...user, password: e.target.password.value}
         changeOfficerData(id, user, navigate)
     }
+
     return(
+        !!props.employee.email &&
         <>
             <h1>Информация о сотруднике</h1>
             <form className={'form'} onSubmit={handleSubmit}>
                 <label>
                     <input name={'email'} className={'form_input'} type={'email'}
-                           defaultValue={employee.email} disabled={true}/>
+                           defaultValue={props.employee.email} disabled={true}/>
                     e-mail
                 </label>
                 <label>
@@ -38,25 +46,29 @@ function EmployeeDetail(props){
                     Пароль (введите для изменения)
                 </label>
                 <label>
-                    <input name={'firstName'} className={'form_input'} type={'text'} defaultValue={employee.firstName}/>
+                    <input name={'firstName'} className={'form_input'} type={'text'} defaultValue={props.employee.firstName}/>
                     Имя
                 </label>
                 <label>
-                    <input name={'lastName'} className={'form_input'} type={'text'} defaultValue={employee.lastName}/>
+                    <input name={'lastName'} className={'form_input'} type={'text'} defaultValue={props.employee.lastName}/>
                     Фамилия
                 </label>
                 <label>
                     <input name={'approved'} className={'form_input'} type={'checkbox'}
-                           defaultChecked={employee.approved}/>
+                           defaultChecked={props.employee.approved}/>
                     Одобрен
                 </label>
                 <button type={'submit'}>Внести изменения</button>
             </form>
-            <BackButton/></>
+            <BackButton/>
+        </>
     )
 }
 
 const mapStateToProps = state => ({
-    employees: state.posts.employees
+    employee: state.posts.employee
 })
-export default connect (mapStateToProps)(EmployeeDetail)
+const mapDispatchToProps = {
+    setEmployee
+}
+export default connect (mapStateToProps, mapDispatchToProps)(EmployeeDetail)

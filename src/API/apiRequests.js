@@ -1,21 +1,35 @@
 import axios from "axios";
+import {setAuthorized} from "../redux/actions";
+import {store} from "../index";
+
 const headerFromLS = JSON.parse(localStorage.getItem('Auth'))
 axios.defaults.baseURL = 'https://sf-final-project-be.herokuapp.com/api/'
+const $axios = axios.create()
+
+$axios.interceptors.response.use(config => config,
+    error => {
+        store.dispatch(setAuthorized(false))
+        localStorage.removeItem('Auth')
+        return Promise.reject(error)
+    },
+)
 
 export function getAllOfficers (setEmployees) {
-    axios
+    $axios
         .get('officers/', headerFromLS)
-        .then(res => setEmployees(res.data.officers))         //////////////////   записываю данные с сервера в state
-        .catch(err => alert(err.response.data.message))
+        .then(res => setEmployees(res.data.officers) )        //////////////////   записываю данные с сервера в state
+        .catch(err => {
+            alert(err.response.data.message)
+        })
 }
-export function getOfficer (id) {
-    axios
+export function getOfficer (id, setEmployee) {
+    $axios
         .get(`officers/${id}`, headerFromLS)
-        .then(res => res.data.data)
+        .then(res => setEmployee(res.data.data))
         .catch(err => alert(err.response.data.message))
 }
 export function deleteOfficer (id, getEmployees) {
-    axios
+    $axios
         .delete(`officers/${id}`, headerFromLS)
         .then(res => {
             if (res.status === 200) {
@@ -26,7 +40,7 @@ export function deleteOfficer (id, getEmployees) {
 }
 
 export function deleteCase (id, setCases) {
-    axios
+    $axios
         .delete(`cases/${id}`, headerFromLS)
         .then(res => {
             if (res.status === 200) {
@@ -35,12 +49,20 @@ export function deleteCase (id, setCases) {
         })
         .catch(err => alert(err.response.data.message))
 }
+export function getCase (id) {
+    return $axios
+        .get(`cases/${id}`, headerFromLS)
+        .then(res => res.data.data)
+        .catch(err => alert(err.response.data.message))
+}
 export function signIn (setAuthorized, user) {
     axios
         .post('auth/sign_in', user)
         .then(res => {
-            setAuthorized(true)
-            localStorage.setItem('Auth', `{ "headers": { "Authorization": "Bearer ${res.data.data.token}"}}`)
+            if (res) {
+                setAuthorized(true)
+                localStorage.setItem('Auth', `{ "headers": { "Authorization": "Bearer ${res.data.data.token}"}}`)
+            }
         })
         .catch(err => alert(err.response.data.message))
 }
@@ -53,7 +75,7 @@ export function tokenValidity () {
         })
 }
 export function changeOfficerData (id, user, navigate) {
-    axios
+    $axios
         .put(`officers/${id}`, user, headerFromLS)
         .then(res => {
             if (res.status === 200) navigate(-1)
@@ -61,7 +83,7 @@ export function changeOfficerData (id, user, navigate) {
         .catch(err => alert(err.response.data.message))
 }
 export function changeCaseData (id, editedCase, navigate) {
-    axios
+    $axios
         .put(`cases/${id}`, editedCase, headerFromLS)
         .then(res => {
             if (res.status === 200) navigate(-1)
@@ -69,7 +91,7 @@ export function changeCaseData (id, editedCase, navigate) {
         .catch(err => alert(err.response.data.message))
 }
 export function signUp (newEmployee, navigate) {
-    axios
+    $axios
         .post('auth/sign_up', newEmployee)
         .then(res => {
             if (res.status === 200) navigate(-1)
@@ -79,7 +101,7 @@ export function signUp (newEmployee, navigate) {
 
 export function createCase (theft, navigate) {                 //      add catch//////////////////////////////////////////////
     if (localStorage.getItem('Auth')) {
-        axios
+        $axios
             .post('cases/', theft, headerFromLS)
             .then(res => {
                 if (res.status === 200) navigate(-1)
@@ -96,7 +118,7 @@ export function createCase (theft, navigate) {                 //      add catch
     }
 }
 export function getAllCases (setCases) {
-    axios
+    $axios
         .get('cases/', headerFromLS)
         .then(res => setCases(res.data.data))         //////////////////   записываю данные с сервера в state
         .catch(err => alert(err.response.data.message))

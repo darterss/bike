@@ -4,6 +4,7 @@ import {useEffect} from "react";
 import {setEmployees} from "../../redux/actions";
 import {Link} from "react-router-dom";
 import {deleteOfficer, getAllOfficers} from "../../API/apiRequests";
+import './ResponsibleStaff.css'
 function ResponsibleStaff(props) {
     useEffect(() => {
         getAllOfficers(props.setEmployees);

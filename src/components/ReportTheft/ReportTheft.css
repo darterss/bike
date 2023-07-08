@@ -14,7 +14,6 @@
 }
 
 .form label {
-    white-space: nowrap;
     display: flex;
     justify-content: space-around;
 }
