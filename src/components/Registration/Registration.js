@@ -2,23 +2,9 @@ import BackButton from "../BackButton";
 import {connect} from "react-redux";
 import {useNavigate} from "react-router-dom";
 import {signUp} from "../../API/apiRequests";
-import styled from "styled-components";
+import {Form, Input, Label} from "../styled-components/styled-components";
 
 function Registration(props) {
-    const Form = styled.form`
-      display: flex;
-      flex-direction: column;
-      align-items: flex-start;
-      margin-left: 10%;
-    `
-    const Input = styled.input`
-      margin: 1% 10px;
-    `
-    const Label = styled.label`
-      display: flex;
-      justify-content: space-around;
-    `
-
     const navigate = useNavigate()
     function handleSubmit (e) {
         e.preventDefault()

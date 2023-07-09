@@ -3,17 +3,16 @@ import {setAuthorized} from "../../redux/actions";
 import {Link} from "react-router-dom";
 import {signIn} from "../../API/apiRequests";
 import styled from "styled-components";
-
-function Authorisation(props){
-    const Form = styled.form`
+const Form = styled.form`
       width: 30%;
       display: flex;
       flex-direction: column;
       align-items: center;
     `
-    const Input = styled.input`
+const Input = styled.input`
       margin: 1% 0;
     `
+function Authorisation(props){
     function handleSubmit(e) {
         e.preventDefault()
         const user = {

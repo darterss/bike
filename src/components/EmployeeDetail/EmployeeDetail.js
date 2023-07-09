@@ -4,23 +4,9 @@ import {useNavigate, useParams} from "react-router-dom";
 import {changeOfficerData, getOfficer} from "../../API/apiRequests";
 import {setEmployee} from "../../redux/actions";
 import {useEffect} from "react";
-import styled from "styled-components";
+import {Form, Input, Label} from "../styled-components/styled-components";
 
 function EmployeeDetail(props){
-    const Form = styled.form`
-      display: flex;
-      flex-direction: column;
-      align-items: flex-start;
-      margin-left: 10%;
-    `
-    const Input = styled.input`
-      margin: 1% 10px;
-    `
-    const Label = styled.label`
-      display: flex;
-      justify-content: space-around;
-    `
-
     const { id } = useParams()
     useEffect(() => {
         getOfficer(id, props.setEmployee)

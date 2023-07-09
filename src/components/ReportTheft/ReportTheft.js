@@ -4,26 +4,10 @@ import {createCase, getAllOfficers} from "../../API/apiRequests";
 import {useEffect} from "react";
 import {setEmployees} from "../../redux/actions";
 import {useNavigate} from "react-router-dom";
-import styled from "styled-components";
 import {validateName} from "../../functions";
-function ReportTheft(props) {
-    const Form = styled.form`
-      display: flex;
-      flex-direction: column;
-      align-items: flex-start;
-      margin-left: 10%;
-    `
-    const Input = styled.input`
-      margin: 1% 10px;
-    `
-    const Select = styled.select`
-      margin: 1% 10px;
-    `
-    const Label = styled.label`
-      display: flex;
-      justify-content: space-around;
-    `
+import {Form, Input, Label, Select} from "../styled-components/styled-components";
 
+function ReportTheft(props) {
     const navigate = useNavigate()
     useEffect(() => {
         if (props.authorized) getAllOfficers(props.setEmployees)

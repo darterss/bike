@@ -1,0 +1,214 @@
+Subject: [PATCH] AuthService
+---
+Index: src/redux/appReducer.js
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/src/redux/appReducer.js b/src/redux/appReducer.js
+--- a/src/redux/appReducer.js	(revision d7cb860e21edb17245dda0a252f0bdecabaca35b)
++++ b/src/redux/appReducer.js	(date 1688919286729)
+@@ -1,8 +1,9 @@
+ import {SET_AUTHORIZED} from "./actionTypes";
++import auth from "../services/auth";
+ 
+ const initialState = {
+-    authorized: !!JSON.parse(localStorage.getItem('Auth'))
+-    }
++    authorized: auth.hasToken()
++}
+ 
+ export function appReducer(state = initialState, action) {
+     switch(action.type) {
+@@ -11,4 +12,4 @@
+         default:
+             return state;
+     }
+-}
+\ No newline at end of file
++}
+Index: src/API/apiRequests.js
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/src/API/apiRequests.js b/src/API/apiRequests.js
+--- a/src/API/apiRequests.js	(revision d7cb860e21edb17245dda0a252f0bdecabaca35b)
++++ b/src/API/apiRequests.js	(date 1688919286726)
+@@ -1,14 +1,15 @@
+ import axios from "axios";
+ import {setAuthorized} from "../redux/actions";
+ import {store} from "../index";
++import auth from "../services/auth";
+ 
+-const headerFromLS = JSON.parse(localStorage.getItem('Auth'))
++const headerFromLS = auth.getAuthHeaders()
+ axios.defaults.baseURL = 'https://sf-final-project-be.herokuapp.com/api/'
+ const $axios = axios.create()
+ $axios.interceptors.response.use(config => config,
+     error => {
+         store.dispatch(setAuthorized(false))
+-        localStorage.removeItem('Auth')
++        auth.logout()
+         return Promise.reject(error)
+     },
+ )
+@@ -60,7 +61,7 @@
+         .then(res => {
+             if (res) {
+                 setAuthorized(true)
+-                localStorage.setItem('Auth', `{ "headers": { "Authorization": "Bearer ${res.data.data.token}"}}`)
++                auth.setToken(res.data.data.token)
+             }
+             else alert('Необходимо пройти авторизацию заново')
+         })
+@@ -93,7 +94,7 @@
+ }
+ 
+ export function createCase (theft, navigate) {
+-    if (localStorage.getItem('Auth')) {
++    if (auth.hasToken()) {
+         $axios
+             .post('cases/', theft, headerFromLS)
+             .then(res => {
+@@ -115,4 +116,4 @@
+         .get('cases/', headerFromLS)
+         .then(res => setCases(res.data.data))         //////////////////   записываю данные с сервера в state
+         .catch(err => alert(err.response.data.message))
+-}
+\ No newline at end of file
++}
+Index: src/services/auth.js
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/src/services/auth.js b/src/services/auth.js
+new file mode 100644
+--- /dev/null	(date 1688919648353)
++++ b/src/services/auth.js	(date 1688919648353)
+@@ -0,0 +1,51 @@
++class Auth {
++
++    token = null
++    userName = null
++
++    setToken = (token) => {
++        localStorage.setItem('Auth', token)
++        this.token = token
++    }
++
++    getToken = () => {
++        if (!this.token) {
++            this.token = localStorage.getItem('Auth')
++        }
++        return this.token
++    }
++
++    hasToken = () => {
++        if (!this.token) {
++            this.token = localStorage.getItem('Auth')
++        }
++        return !!this.token
++    }
++
++    setUserName = (userName) => {
++        this.userName = userName
++        localStorage.setItem('userName', userName)
++    }
++
++    getAuthHeaders = () => {
++        return {headers: {Authorization: `Bearer ${this.getToken()}`}}
++    }
++
++    getUserName = () => {
++        if (!this.userName) {
++            this.userName = localStorage.getItem('userName')
++        }
++        return this.userName
++    }
++
++    logout = () => {
++        localStorage.removeItem('Auth')
++        localStorage.removeItem('userName')
++        this.userName = null
++        this.token = null
++    }
++}
++
++const auth = new Auth()
++
++export default auth
+Index: src/components/Logout/Logout.js
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/src/components/Logout/Logout.js b/src/components/Logout/Logout.js
+--- a/src/components/Logout/Logout.js	(revision d7cb860e21edb17245dda0a252f0bdecabaca35b)
++++ b/src/components/Logout/Logout.js	(date 1688919286721)
+@@ -2,6 +2,7 @@
+ import { setAuthorized } from "../../redux/actions";
+ import {useNavigate} from "react-router-dom";
+ import styled from "styled-components";
++import auth from "../../services/auth";
+ 
+ function Logout (props) {
+     const Div = styled.div`
+@@ -11,15 +12,14 @@
+       align-items: center;
+     `
+     const navigate = useNavigate()
+-    const userName = localStorage.getItem('userName')
+     function handleClick () {
+         props.setAuthorized(false);
+-        localStorage.removeItem('Auth')
++        auth.logout()
+         navigate('/')
+     }
+     return(
+         <Div>
+-            <p>{userName}</p>
++            <p>{auth.getUserName()}</p>
+             <button onClick={handleClick}>Выйти</button>
+         </Div>
+     )
+@@ -27,4 +27,4 @@
+ const mapDispatchToProps = {
+     setAuthorized
+ }
+-export default connect(null, mapDispatchToProps)(Logout)
+\ No newline at end of file
++export default connect(null, mapDispatchToProps)(Logout)
+Index: src/components/Authorisation/Authorisation.js
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/src/components/Authorisation/Authorisation.js b/src/components/Authorisation/Authorisation.js
+--- a/src/components/Authorisation/Authorisation.js	(revision d7cb860e21edb17245dda0a252f0bdecabaca35b)
++++ b/src/components/Authorisation/Authorisation.js	(date 1688919309458)
+@@ -3,6 +3,7 @@
+ import {Link} from "react-router-dom";
+ import {signIn} from "../../API/apiRequests";
+ import styled from "styled-components";
++import auth from "../../services/auth";
+ 
+ function Authorisation(props){
+     const Form = styled.form`
+@@ -21,7 +22,7 @@
+             password: e.target.password.value
+         }
+         signIn(props.setAuthorized, user)
+-        localStorage.setItem('userName', user.email)
++        auth.setUserName(user.email)
+     }
+ 
+     return(
+@@ -38,4 +39,4 @@
+ const mapDispatchToProps = {
+     setAuthorized
+ }
+-export default connect(null, mapDispatchToProps)(Authorisation)
+\ No newline at end of file
++export default connect(null, mapDispatchToProps)(Authorisation)

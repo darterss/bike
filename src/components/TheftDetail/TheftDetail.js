@@ -4,27 +4,10 @@ import BackButton from "../BackButton";
 import {useNavigate, useParams} from "react-router-dom";
 import {changeCaseData, getAllOfficers, getCase} from "../../API/apiRequests";
 import {useEffect, useRef, useState} from "react";
-import styled from "styled-components";
 import {validateName} from "../../functions";
+import {Form, Input, Label, Select} from "../styled-components/styled-components";
 
 function TheftDetail(props){
-    const Form = styled.form`
-      display: flex;
-      flex-direction: column;
-      align-items: flex-start;
-      margin-left: 10%;
-    `
-    const Input = styled.input`
-      margin: 1% 10px;
-    `
-    const Select = styled.select`
-      margin: 1% 10px;
-    `
-    const Label = styled.label`
-      display: flex;
-      justify-content: space-around;
-    `
-
     const { id } = useParams()
     const [specCase, setSpecCase] = useState(null)
     const navigate = useNavigate()
