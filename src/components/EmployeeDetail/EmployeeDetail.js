@@ -5,6 +5,7 @@ import {changeOfficerData, getOfficer} from "../../API/apiRequests";
 import {setEmployee} from "../../redux/actions";
 import {useEffect} from "react";
 import {Form, Input, Label} from "../styled-components/styled-components";
+import {validatePassword} from "../../services/validators";
 
 function EmployeeDetail(props){
     const { id } = useParams()
@@ -21,7 +22,10 @@ function EmployeeDetail(props){
             lastName: e.target.lastName.value,
             approved: e.target.approved.checked
         }
-        if (e.target.password.value !== '')  user = {...user, password: e.target.password.value}
+        if (e.target.password.value !== '') {
+            if (!validatePassword(e)) return
+            user = {...user, password: e.target.password.value}
+        }
         changeOfficerData(id, user, navigate)
     }
 

@@ -4,7 +4,7 @@ import {createCase, getAllOfficers} from "../../API/apiRequests";
 import {useEffect} from "react";
 import {setEmployees} from "../../redux/actions";
 import {useNavigate} from "react-router-dom";
-import {validateName} from "../../functions";
+import {validateName} from "../../services/validators";
 import {Form, Input, Label, Select} from "../styled-components/styled-components";
 
 function ReportTheft(props) {

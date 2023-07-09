@@ -2,6 +2,7 @@ import { connect } from "react-redux";
 import { setAuthorized } from "../../redux/actions";
 import {useNavigate} from "react-router-dom";
 import styled from "styled-components";
+import auth from "../../services/auth";
 
 const Div = styled.div`
       width: 30%;
@@ -12,15 +13,14 @@ const Div = styled.div`
 
 function Logout (props) {
     const navigate = useNavigate()
-    const userName = localStorage.getItem('userName')
     function handleClick () {
         props.setAuthorized(false);
-        localStorage.removeItem('Auth')
+        auth.logout()
         navigate('/')
     }
     return(
         <Div>
-            <p>{userName}</p>
+            <p>{auth.getUserName()}</p>
             <button onClick={handleClick}>Выйти</button>
         </Div>
     )

@@ -3,11 +3,13 @@ import {connect} from "react-redux";
 import {useNavigate} from "react-router-dom";
 import {signUp} from "../../API/apiRequests";
 import {Form, Input, Label} from "../styled-components/styled-components";
+import {validatePassword} from "../../services/validators";
 
 function Registration(props) {
     const navigate = useNavigate()
     function handleSubmit (e) {
         e.preventDefault()
+        if (!validatePassword(e)) return
         let sameEmail = false;
         props.employees.forEach(emp => {
             if (emp.email.toLowerCase() === e.target.email.value.toLowerCase()) sameEmail = true // валидация на повторение поля email

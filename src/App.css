@@ -85,6 +85,11 @@ hr {
     border: 1px solid darkgray;
     border-radius: 100%;
 }
+
+table {
+    word-wrap: anywhere;
+}
+
 tr:nth-child(2n+2) {
     background-color: lightgrey;
 }

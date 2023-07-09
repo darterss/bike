@@ -4,7 +4,7 @@ import BackButton from "../BackButton";
 import {useNavigate, useParams} from "react-router-dom";
 import {changeCaseData, getAllOfficers, getCase} from "../../API/apiRequests";
 import {useEffect, useRef, useState} from "react";
-import {validateName} from "../../functions";
+import {validateName} from "../../services/validators";
 import {Form, Input, Label, Select} from "../styled-components/styled-components";
 
 function TheftDetail(props){
