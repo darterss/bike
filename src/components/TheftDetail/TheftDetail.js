@@ -16,7 +16,7 @@ function TheftDetail(props){
 
     useEffect(() => {
         getCase(id).then(setSpecCase)
-        getAllOfficers(props.setEmployees)
+        getAllOfficers().then(props.setEmployees)
     }, [id])
 
     if (!specCase) return (

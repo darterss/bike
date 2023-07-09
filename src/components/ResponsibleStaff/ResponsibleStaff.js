@@ -6,7 +6,7 @@ import {Link} from "react-router-dom";
 import {deleteOfficer, getAllOfficers} from "../../API/apiRequests";
 function ResponsibleStaff(props) {
     useEffect(() => {
-        getAllOfficers(props.setEmployees);
+        getAllOfficers().then(props.setEmployees)
     }, [])
     function handleClick(e, id) {
         deleteOfficer(id, props.setEmployees)

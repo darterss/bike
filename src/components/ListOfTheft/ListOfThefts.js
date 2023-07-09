@@ -6,7 +6,7 @@ import {useEffect} from "react";
 import {Link} from "react-router-dom";
 function ListOfThefts(props) {
     useEffect(() => {
-        getAllCases(props.setCases)
+        getAllCases().then(props.setCases)
     }, [])
     function handleClick(e, id) {
         deleteCase(id, props.setCases)

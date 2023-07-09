@@ -10,7 +10,7 @@ import {Form, Input, Label, Select} from "../styled-components/styled-components
 function ReportTheft(props) {
     const navigate = useNavigate()
     useEffect(() => {
-        if (props.authorized) getAllOfficers(props.setEmployees)
+        if (props.authorized) getAllOfficers().then(props.setEmployees)
     }, [])
     function handleSubmit(e){
         e.preventDefault()

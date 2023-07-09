@@ -7,16 +7,18 @@ axios.defaults.baseURL = 'https://sf-final-project-be.herokuapp.com/api/'
 const $axios = axios.create()
 $axios.interceptors.response.use(config => config,
     error => {
-        store.dispatch(setAuthorized(false))
-        localStorage.removeItem('Auth')
-        return Promise.reject(error)
+        if (error.response.status === 401) {
+            store.dispatch(setAuthorized(false))
+            localStorage.removeItem('Auth')
+            return Promise.reject(error)
+        }
     },
 )
 
-export function getAllOfficers (setEmployees) {
-    $axios
+export function getAllOfficers () {
+    return $axios
         .get('officers/', headerFromLS)
-        .then(res => setEmployees(res.data.officers) )        //////////////////   записываю данные с сервера в state
+        .then(res => res.data.officers)
         .catch(err => {
             alert(err.response.data.message)
         })
@@ -110,9 +112,9 @@ export function createCase (theft, navigate) {
             .catch(err => alert(err.response.data.message))
     }
 }
-export function getAllCases (setCases) {
-    $axios
+export function getAllCases () {
+    return $axios
         .get('cases/', headerFromLS)
-        .then(res => setCases(res.data.data))         //////////////////   записываю данные с сервера в state
+        .then(res => res.data.data)
         .catch(err => alert(err.response.data.message))
 }
