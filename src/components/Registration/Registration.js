@@ -2,8 +2,23 @@ import BackButton from "../BackButton";
 import {connect} from "react-redux";
 import {useNavigate} from "react-router-dom";
 import {signUp} from "../../API/apiRequests";
+import styled from "styled-components";
 
 function Registration(props) {
+    const Form = styled.form`
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      margin-left: 10%;
+    `
+    const Input = styled.input`
+      margin: 1% 10px;
+    `
+    const Label = styled.label`
+      display: flex;
+      justify-content: space-around;
+    `
+
     const navigate = useNavigate()
     function handleSubmit (e) {
         e.preventDefault()
@@ -24,31 +39,31 @@ function Registration(props) {
     return (
         <>
             <h1>Регистрация</h1>
-            <form className={'form'} onSubmit={handleSubmit}>
-                <label>
-                    <input name={'email'} className={'form_input'} type={'email'} required={true} autoFocus={true} />
+            <Form onSubmit={handleSubmit}>
+                <Label>
+                    <Input name={'email'} type={'email'} required={true} autoFocus={true} />
                     e-mail  *
-                </label>
-                <label>
-                    <input name={'password'} className={'form_input'} type={'password'} required={true}
+                </Label>
+                <Label>
+                    <Input name={'password'} type={'password'} required={true}
                            placeholder={'от 3 до 12 символов'}/>
                     Пароль  *
-                </label>
-                <label>
-                    <input name={'firstName'} className={'form_input'} type={'text'} />
+                </Label>
+                <Label>
+                    <Input name={'firstName'} className={'form_input'} type={'text'} />
                     Имя
-                </label>
-                <label>
-                    <input name={'lastName'} className={'form_input'} type={'text'}/>
+                </Label>
+                <Label>
+                    <Input name={'lastName'} className={'form_input'} type={'text'}/>
                     Фамилия
-                </label>
-                <label>
-                    <input name={'clientId'} className={'form_input'} type={'text'}
+                </Label>
+                <Label>
+                    <Input name={'clientId'} className={'form_input'} type={'text'}
                            defaultValue={'08b81fe0-6aa8-4033-ac59-83d011f1aa37'} disabled={true} />
                     ClientId
-                </label>
+                </Label>
                 <button type={'submit'}>Зарегистрироваться</button>
-            </form>
+            </Form>
             <BackButton />
         </>
     )

@@ -1,7 +1,0 @@
-tr:nth-child(2n+2) {
-    background-color: lightgrey;
-}
-
-td:last-child {
-    background-color: white;
-}

@@ -1,10 +1,19 @@
-import "./Authorisation.css";
 import {connect} from "react-redux";
 import {setAuthorized} from "../../redux/actions";
 import {Link} from "react-router-dom";
 import {signIn} from "../../API/apiRequests";
+import styled from "styled-components";
 
 function Authorisation(props){
+    const Form = styled.form`
+      width: 30%;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    `
+    const Input = styled.input`
+      margin: 1% 0;
+    `
     function handleSubmit(e) {
         e.preventDefault()
         const user = {
@@ -16,14 +25,14 @@ function Authorisation(props){
     }
 
     return(
-        <form className={'authorisation_form'} onSubmit={handleSubmit}>
-            <input name={'email'} className={'authorisation_input'} placeholder={'имя пользователя'} type={"text"}
+        <Form onSubmit={handleSubmit}>
+            <Input name={'email'} placeholder={'имя пользователя'} type={"text"}
                    required={true}/>
-            <input name={'password'} className={'authorisation_input'} placeholder={'пароль'} type={"password"}
+            <Input name={'password'} placeholder={'пароль'} type={"password"}
                    required={true}/>
             <button type={'submit'}>Войти</button>
             <Link to={'/registration'}>Регистрация</Link>
-        </form>
+        </Form>
     )
 }
 const mapDispatchToProps = {

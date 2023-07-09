@@ -5,7 +5,6 @@ import {store} from "../index";
 const headerFromLS = JSON.parse(localStorage.getItem('Auth'))
 axios.defaults.baseURL = 'https://sf-final-project-be.herokuapp.com/api/'
 const $axios = axios.create()
-
 $axios.interceptors.response.use(config => config,
     error => {
         store.dispatch(setAuthorized(false))
@@ -63,17 +62,11 @@ export function signIn (setAuthorized, user) {
                 setAuthorized(true)
                 localStorage.setItem('Auth', `{ "headers": { "Authorization": "Bearer ${res.data.data.token}"}}`)
             }
+            else alert('Необходимо пройти авторизацию заново')
         })
         .catch(err => alert(err.response.data.message))
 }
-export function tokenValidity () {
-    axios
-        .get('auth/', headerFromLS)
-        .then(res => res.data.status === 'OK')
-        .catch(err => {
-            alert(err.response.data.message)
-        })
-}
+
 export function changeOfficerData (id, user, navigate) {
     $axios
         .put(`officers/${id}`, user, headerFromLS)
@@ -99,7 +92,7 @@ export function signUp (newEmployee, navigate) {
         .catch(err => alert(err.response.data.message))
 }
 
-export function createCase (theft, navigate) {                 //      add catch//////////////////////////////////////////////
+export function createCase (theft, navigate) {
     if (localStorage.getItem('Auth')) {
         $axios
             .post('cases/', theft, headerFromLS)

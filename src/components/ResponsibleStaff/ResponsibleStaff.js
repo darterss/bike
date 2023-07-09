@@ -4,7 +4,6 @@ import {useEffect} from "react";
 import {setEmployees} from "../../redux/actions";
 import {Link} from "react-router-dom";
 import {deleteOfficer, getAllOfficers} from "../../API/apiRequests";
-import './ResponsibleStaff.css'
 function ResponsibleStaff(props) {
     useEffect(() => {
         getAllOfficers(props.setEmployees);
@@ -12,6 +11,11 @@ function ResponsibleStaff(props) {
     function handleClick(e, id) {
         deleteOfficer(id, props.setEmployees)
     }
+
+    if (!props.employees.length) return (
+        <div>Загрузка...</div>
+    )
+
     return (
         <>
             <h1>Ответственные сотрудники</h1>

@@ -4,10 +4,24 @@ import {useNavigate, useParams} from "react-router-dom";
 import {changeOfficerData, getOfficer} from "../../API/apiRequests";
 import {setEmployee} from "../../redux/actions";
 import {useEffect} from "react";
+import styled from "styled-components";
 
 function EmployeeDetail(props){
+    const Form = styled.form`
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      margin-left: 10%;
+    `
+    const Input = styled.input`
+      margin: 1% 10px;
+    `
+    const Label = styled.label`
+      display: flex;
+      justify-content: space-around;
+    `
+
     const { id } = useParams()
-    //const employee = getItemFromState(props.employees, id, 'employee')
     useEffect(() => {
         getOfficer(id, props.setEmployee)
         return () => props.setEmployee({})
@@ -25,41 +39,44 @@ function EmployeeDetail(props){
         changeOfficerData(id, user, navigate)
     }
 
+    if (!props.employee.email) return (
+        <div>Загрузка...</div>
+    )
+
     return(
-        !!props.employee.email &&
         <>
             <h1>Информация о сотруднике</h1>
-            <form className={'form'} onSubmit={handleSubmit}>
-                <label>
-                    <input name={'email'} className={'form_input'} type={'email'}
+            <Form onSubmit={handleSubmit}>
+                <Label>
+                    <Input name={'email'} type={'email'}
                            defaultValue={props.employee.email} disabled={true}/>
                     e-mail
-                </label>
-                <label>
-                    <input name={'clientId'} className={'form_input'} type={'text'}
+                </Label>
+                <Label>
+                    <Input name={'clientId'} type={'text'}
                            defaultValue={'08b81fe0-6aa8-4033-ac59-83d011f1aa37'} disabled={true} />
                     ClientId
-                </label>
-                <label>
-                    <input name={'password'} className={'form_input'} type={'password'}
+                </Label>
+                <Label>
+                    <Input name={'password'} type={'password'}
                            placeholder={'от 3 до 12 символов'}/>
                     Пароль (введите для изменения)
-                </label>
-                <label>
-                    <input name={'firstName'} className={'form_input'} type={'text'} defaultValue={props.employee.firstName}/>
+                </Label>
+                <Label>
+                    <Input name={'firstName'} type={'text'} defaultValue={props.employee.firstName}/>
                     Имя
-                </label>
-                <label>
-                    <input name={'lastName'} className={'form_input'} type={'text'} defaultValue={props.employee.lastName}/>
+                </Label>
+                <Label>
+                    <Input name={'lastName'} type={'text'} defaultValue={props.employee.lastName}/>
                     Фамилия
-                </label>
-                <label>
-                    <input name={'approved'} className={'form_input'} type={'checkbox'}
+                </Label>
+                <Label>
+                    <Input name={'approved'} type={'checkbox'}
                            defaultChecked={props.employee.approved}/>
                     Одобрен
-                </label>
+                </Label>
                 <button type={'submit'}>Внести изменения</button>
-            </form>
+            </Form>
             <BackButton/>
         </>
     )

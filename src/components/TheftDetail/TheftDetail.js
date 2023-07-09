@@ -4,8 +4,27 @@ import BackButton from "../BackButton";
 import {useNavigate, useParams} from "react-router-dom";
 import {changeCaseData, getAllOfficers, getCase} from "../../API/apiRequests";
 import {useEffect, useRef, useState} from "react";
+import styled from "styled-components";
+import {validateName} from "../../functions";
 
 function TheftDetail(props){
+    const Form = styled.form`
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      margin-left: 10%;
+    `
+    const Input = styled.input`
+      margin: 1% 10px;
+    `
+    const Select = styled.select`
+      margin: 1% 10px;
+    `
+    const Label = styled.label`
+      display: flex;
+      justify-content: space-around;
+    `
+
     const { id } = useParams()
     const [specCase, setSpecCase] = useState(null)
     const navigate = useNavigate()
@@ -18,7 +37,7 @@ function TheftDetail(props){
     }, [id])
 
     if (!specCase) return (
-        <div>Loading...</div>
+        <div>Загрузка...</div>
     )
 
     if (specCase  && disable === null) setDisable(specCase.status !== 'done')
@@ -29,6 +48,7 @@ function TheftDetail(props){
     }
     function handleSubmit(e) {
         e.preventDefault()
+        if (!validateName(e)) return
         const employee = props.employees.find(emp => (emp._id === e.target.officer.value)) // объект работника из redux state
         let editedCase = {
             status: e.target.status.value,
@@ -46,83 +66,83 @@ function TheftDetail(props){
     return(
         <>
             <h1>Информация по краже</h1>
-            <form className={'form'} onSubmit={handleSubmit}>
-                <label>
-                    <select name={'status'} className={'form_input'} required={true}
+            <Form onSubmit={handleSubmit}>
+                <Label>
+                    <Select name={'status'} required={true}
                            defaultValue={specCase.status} onChange={handleChange}>
                         <option value={'new'}>new</option>
                         <option value={'in_progress'}>in progress</option>
                         <option value={'done'}>done</option>
-                    </select>
+                    </Select>
                     Статус *
-                </label>
-                <label>
-                    <input name={'licenseNumber'} className={'form_input'} type={'text'} required={true}
+                </Label>
+                <Label>
+                    <Input name={'licenseNumber'} type={'number'} required={true}
                            defaultValue={specCase.licenseNumber}/>
                     Номер лицензии *
-                </label>
-                <label>
-                    <select name={'typeOfBike'} className={'form_select'} required={true}
+                </Label>
+                <Label>
+                    <Select name={'typeOfBike'} required={true}
                             defaultValue={specCase.type}>
                         <option>general</option>
                         <option>sport</option>
-                    </select>
+                    </Select>
                     Тип велосипеда *
-                </label>
-                <label>
-                    <input name={'ownerFullName'} className={'form_input'} type={'text'} required={true}
+                </Label>
+                <Label>
+                    <Input name={'ownerFullName'} type={'text'} required={true}
                            defaultValue={specCase.ownerFullName} />
                     ФИО клиента *
-                </label>
-                <label>
-                    <input name={'clientId'} className={'form_input'} type={'text'}
+                </Label>
+                <Label>
+                    <Input name={'clientId'} type={'text'}
                            defaultValue={specCase.clientId}
                     disabled={true} />
                     ClientId
-                </label>
-                <label>
-                    <input name={'createdAt'} className={'form_input'} type={'text'}
+                </Label>
+                <Label>
+                    <Input name={'createdAt'} type={'text'}
                            defaultValue={specCase.createdAt.substring(0,10)} disabled={true} />
                     Дата создания сообщения
-                </label>
-                <label>
-                    <input name={'updatedAt'} className={'form_input'} type={'text'}
+                </Label>
+                <Label>
+                    <Input name={'updatedAt'} type={'text'}
                            defaultValue={specCase.updatedAt ? specCase.updatedAt.substring(0,10) : null}
                            disabled={true} />
                     Дата обновления сообщения
-                </label>
-                <label>
-                    <input name={'colorOfBike'} className={'form_input'} type={'text'}
+                </Label>
+                <Label>
+                    <Input name={'colorOfBike'} type={'text'}
                            defaultValue={specCase.color}/>
                     Цвет велосипеда
-                </label>
-                <label>
-                    <input name={'dateOfTheft'} className={'form_input'} type={'date'}
+                </Label>
+                <Label>
+                    <Input name={'dateOfTheft'} type={'date'}
                            defaultValue={specCase.date ? specCase.date.substring(0,10) : null}/>
                     Дата кражи
-                </label>
-                <label>
-                    <input name={'description'} className={'form_input'} type={'text'}
+                </Label>
+                <Label>
+                    <Input name={'description'} type={'text'}
                            defaultValue={specCase.description} />
                     Дополнительный комментарий
-                </label>
-                <label>
-                    <select name={'officer'} className={'form_select'} defaultValue={specCase.officer}>
+                </Label>
+                <Label>
+                    <Select name={'officer'} defaultValue={specCase.officer}>
                         {props.employees.map(emp => {
                             if (emp.approved) return (
                                 <option value={emp._id} key={emp._id}>{emp.email}</option>
                             )
                         })}
-                    </select>
+                    </Select>
                     Ответственный сотрудник
-                </label>
-                <label>
-                    <input name={'resolution'} className={'form_input'} type={'text'}
+                </Label>
+                <Label>
+                    <Input name={'resolution'} type={'text'}
                            defaultValue={specCase.resolution} disabled={disable} required={!disable} ref={ref}/>
                     Завершающий комментарий
-                </label>
+                </Label>
                 <button type={'submit'}>Внести изменения</button>
-            </form>
+            </Form>
             <BackButton/></>
     )
 }

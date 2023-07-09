@@ -11,6 +11,11 @@ function ListOfThefts(props) {
     function handleClick(e, id) {
         deleteCase(id, props.setCases)
     }
+
+    if (!props.cases.length) return (
+        <div>Загрузка...</div>
+    )
+
     return (
         <>
             <h1>Сообщения о кражах</h1>

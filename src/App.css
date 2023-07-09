@@ -59,11 +59,6 @@ button {
     width: max-content;
 }
 
-.button_theft {
-    padding: 5%;
-    font-size: 1.5rem;
-}
-
 a {
     text-decoration: none;
     color: black;
@@ -86,5 +81,14 @@ a:hover {
 }
 
 hr {
-    width: 100%;
+    width: 97%;
+    border: 1px solid darkgray;
+    border-radius: 100%;
+}
+tr:nth-child(2n+2) {
+    background-color: lightgrey;
+}
+
+td:last-child {
+    background-color: white;
 }
