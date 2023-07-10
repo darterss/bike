@@ -13,11 +13,13 @@ const Div = styled.div`
 
 function Logout (props) {
     const navigate = useNavigate()
+
     function handleClick () {
         props.setAuthorized(false);
         auth.logout()
         navigate('/')
     }
+
     return(
         <Div>
             <p>{auth.getUserName()}</p>
@@ -25,7 +27,9 @@ function Logout (props) {
         </Div>
     )
 }
+
 const mapDispatchToProps = {
     setAuthorized
 }
+
 export default connect(null, mapDispatchToProps)(Logout)

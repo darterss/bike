@@ -4,17 +4,20 @@ import {useNavigate, useParams} from "react-router-dom";
 import {changeOfficerData, getOfficer} from "../../API/apiRequests";
 import {setEmployee} from "../../redux/actions";
 import {useEffect} from "react";
-import {Form, Input, Label} from "../styled-components/styled-components";
+import {Button, Form, Input, InputCheckbox, Label} from "../styled-components/styled-components";
 import {validatePassword} from "../../services/validators";
 
 function EmployeeDetail(props){
     const { id } = useParams()
+
     useEffect(() => {
         getOfficer(id, props.setEmployee)
         return () => props.setEmployee({})
     }, []
     )
+
     const navigate = useNavigate()
+
     function handleSubmit (e) {
         e.preventDefault()
         let user = {
@@ -22,6 +25,7 @@ function EmployeeDetail(props){
             lastName: e.target.lastName.value,
             approved: e.target.approved.checked
         }
+
         if (e.target.password.value !== '') {
             if (!validatePassword(e)) return
             user = {...user, password: e.target.password.value}
@@ -61,11 +65,11 @@ function EmployeeDetail(props){
                     Фамилия
                 </Label>
                 <Label>
-                    <Input name={'approved'} type={'checkbox'}
+                    <InputCheckbox name={'approved'} type={'checkbox'}
                            defaultChecked={props.employee.approved}/>
                     Одобрен
                 </Label>
-                <button type={'submit'}>Внести изменения</button>
+                <Button type={'submit'}>Внести изменения</Button>
             </Form>
             <BackButton/>
         </>
@@ -75,7 +79,9 @@ function EmployeeDetail(props){
 const mapStateToProps = state => ({
     employee: state.posts.employee
 })
+
 const mapDispatchToProps = {
     setEmployee
 }
+
 export default connect (mapStateToProps, mapDispatchToProps)(EmployeeDetail)

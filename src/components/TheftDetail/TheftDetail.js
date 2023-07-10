@@ -4,11 +4,11 @@ import BackButton from "../BackButton";
 import {useNavigate, useParams} from "react-router-dom";
 import {changeCaseData, getAllOfficers, getCase} from "../../API/apiRequests";
 import {useEffect, useRef, useState} from "react";
-import {validateName} from "../../services/validators";
-import {Form, Input, Label, Select} from "../styled-components/styled-components";
+import {validateName, validateResolution} from "../../services/validators";
+import {Button, Form, Input, Label, Select} from "../styled-components/styled-components";
 
-function TheftDetail(props){
-    const { id } = useParams()
+function TheftDetail(props) {
+    const {id} = useParams()
     const [specCase, setSpecCase] = useState(null)
     const navigate = useNavigate()
     const ref = useRef()
@@ -19,19 +19,17 @@ function TheftDetail(props){
         getAllOfficers().then(props.setEmployees)
     }, [id])
 
-    if (!specCase) return (
-        <div>Загрузка...</div>
-    )
-
-    if (specCase  && disable === null) setDisable(specCase.status !== 'done')
+    if (specCase && disable === null) setDisable(specCase.status !== 'done')
 
     function handleChange(e) {
         if (e.target.value !== 'done') ref.current.value = ''
         setDisable(e.target.value !== 'done');
     }
+
     function handleSubmit(e) {
         e.preventDefault()
-        if (!validateName(e)) return
+        if (!validateName(e) || !validateResolution(e))
+            return
         const employee = props.employees.find(emp => (emp._id === e.target.officer.value)) // объект работника из redux state
         let editedCase = {
             status: e.target.status.value,
@@ -46,13 +44,18 @@ function TheftDetail(props){
         }
         changeCaseData(id, editedCase, navigate)
     }
-    return(
+
+    if (!specCase) return (
+        <div>Загрузка...</div>
+    )
+
+    return (
         <>
             <h1>Информация по краже</h1>
             <Form onSubmit={handleSubmit}>
                 <Label>
                     <Select name={'status'} required={true}
-                           defaultValue={specCase.status} onChange={handleChange}>
+                            defaultValue={specCase.status} onChange={handleChange}>
                         <option value={'new'}>new</option>
                         <option value={'in_progress'}>in progress</option>
                         <option value={'done'}>done</option>
@@ -60,12 +63,12 @@ function TheftDetail(props){
                     Статус *
                 </Label>
                 <Label>
-                    <Input name={'licenseNumber'} type={'number'} required={true}
+                    <Input name={'licenseNumber'} type={'number'} required
                            defaultValue={specCase.licenseNumber}/>
                     Номер лицензии *
                 </Label>
                 <Label>
-                    <Select name={'typeOfBike'} required={true}
+                    <Select name={'typeOfBike'} required
                             defaultValue={specCase.type}>
                         <option>general</option>
                         <option>sport</option>
@@ -73,25 +76,27 @@ function TheftDetail(props){
                     Тип велосипеда *
                 </Label>
                 <Label>
-                    <Input name={'ownerFullName'} type={'text'} required={true}
-                           defaultValue={specCase.ownerFullName} />
+                    <Input name={'ownerFullName'} type={'text'}
+                           required title={"Только русские или латинские слова с пробелами, не менее 3 символов"}
+                           pattern={"^[A-Za-zА-Яа-яЁё\\s]{3,}"}
+                           defaultValue={specCase.ownerFullName}/>
                     ФИО клиента *
                 </Label>
                 <Label>
                     <Input name={'clientId'} type={'text'}
                            defaultValue={specCase.clientId}
-                    disabled={true} />
+                           disabled={true}/>
                     ClientId
                 </Label>
                 <Label>
                     <Input name={'createdAt'} type={'text'}
-                           defaultValue={specCase.createdAt.substring(0,10)} disabled={true} />
+                           defaultValue={specCase.createdAt.substring(0, 10)} disabled={true}/>
                     Дата создания сообщения
                 </Label>
                 <Label>
                     <Input name={'updatedAt'} type={'text'}
-                           defaultValue={specCase.updatedAt ? specCase.updatedAt.substring(0,10) : null}
-                           disabled={true} />
+                           defaultValue={specCase.updatedAt ? specCase.updatedAt.substring(0, 10) : null}
+                           disabled={true}/>
                     Дата обновления сообщения
                 </Label>
                 <Label>
@@ -101,12 +106,12 @@ function TheftDetail(props){
                 </Label>
                 <Label>
                     <Input name={'dateOfTheft'} type={'date'}
-                           defaultValue={specCase.date ? specCase.date.substring(0,10) : null}/>
+                           defaultValue={specCase.date ? specCase.date.substring(0, 10) : null}/>
                     Дата кражи
                 </Label>
                 <Label>
                     <Input name={'description'} type={'text'}
-                           defaultValue={specCase.description} />
+                           defaultValue={specCase.description}/>
                     Дополнительный комментарий
                 </Label>
                 <Label>
@@ -124,15 +129,18 @@ function TheftDetail(props){
                            defaultValue={specCase.resolution} disabled={disable} required={!disable} ref={ref}/>
                     Завершающий комментарий
                 </Label>
-                <button type={'submit'}>Внести изменения</button>
+                <Button type={'submit'}>Внести изменения</Button>
             </Form>
             <BackButton/></>
     )
 }
+
 const mapStateToProps = state => ({
     employees: state.posts.employees
 })
+
 const mapDispatchToProps = {
     setEmployees
 }
+
 export default connect (mapStateToProps, mapDispatchToProps)(TheftDetail)

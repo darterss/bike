@@ -10,9 +10,11 @@ const Form = styled.form`
       flex-direction: column;
       align-items: center;
     `
+
 const Input = styled.input`
       margin: 1% 0;
     `
+
 function Authorisation(props) {
     function handleSubmit(e) {
         e.preventDefault()
@@ -35,7 +37,9 @@ function Authorisation(props) {
         </Form>
     )
 }
+
 const mapDispatchToProps = {
     setAuthorized
 }
+
 export default connect(null, mapDispatchToProps)(Authorisation)

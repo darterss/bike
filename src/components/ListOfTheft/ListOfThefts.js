@@ -4,10 +4,12 @@ import {connect} from "react-redux";
 import {deleteCase, getAllCases} from "../../API/apiRequests";
 import {useEffect} from "react";
 import {Link} from "react-router-dom";
+
 function ListOfThefts(props) {
     useEffect(() => {
         getAllCases().then(props.setCases)
     }, [])
+
     function handleClick(e, id) {
         deleteCase(id, props.setCases)
     }
@@ -47,10 +49,13 @@ function ListOfThefts(props) {
         </>
     )
 }
+
 const mapStateToProps = state => ({
     cases: state.posts.cases
 })
+
 const mapDispatchToProps = {
     setCases
 }
+
 export default connect (mapStateToProps, mapDispatchToProps)(ListOfThefts)

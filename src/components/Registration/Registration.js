@@ -2,12 +2,13 @@ import BackButton from "../BackButton";
 import {connect} from "react-redux";
 import {useNavigate} from "react-router-dom";
 import {signUp} from "../../API/apiRequests";
-import {Form, Input, Label} from "../styled-components/styled-components";
+import {Button, Form, Input, Label} from "../styled-components/styled-components";
 import {validatePassword} from "../../services/validators";
 
 function Registration(props) {
     const navigate = useNavigate()
-    function handleSubmit (e) {
+
+    function handleSubmit(e) {
         e.preventDefault()
         if (!validatePassword(e)) return
         let sameEmail = false;
@@ -24,21 +25,22 @@ function Registration(props) {
         if (!sameEmail) signUp(newEmployee, navigate)
         else alert('Пользователь с таким email уже существует')
     }
+
     return (
         <>
             <h1>Регистрация</h1>
             <Form onSubmit={handleSubmit}>
                 <Label>
-                    <Input name={'email'} type={'email'} required={true} autoFocus={true} />
-                    e-mail  *
+                    <Input name={'email'} type={'email'} required={true} autoFocus={true}/>
+                    e-mail *
                 </Label>
                 <Label>
                     <Input name={'password'} type={'password'} required={true}
                            placeholder={'от 3 до 12 символов'}/>
-                    Пароль  *
+                    Пароль *
                 </Label>
                 <Label>
-                    <Input name={'firstName'} className={'form_input'} type={'text'} />
+                    <Input name={'firstName'} className={'form_input'} type={'text'}/>
                     Имя
                 </Label>
                 <Label>
@@ -47,16 +49,18 @@ function Registration(props) {
                 </Label>
                 <Label>
                     <Input name={'clientId'} className={'form_input'} type={'text'}
-                           defaultValue={'08b81fe0-6aa8-4033-ac59-83d011f1aa37'} disabled={true} />
+                           defaultValue={'08b81fe0-6aa8-4033-ac59-83d011f1aa37'} disabled={true}/>
                     ClientId
                 </Label>
-                <button type={'submit'}>Зарегистрироваться</button>
+                <Button type={'submit'}>Зарегистрироваться</Button>
             </Form>
-            <BackButton />
+            <BackButton/>
         </>
     )
 }
+
 const mapStateToProps = state => ({
     employees: state.posts.employees
 })
+
 export default connect(mapStateToProps)(Registration)

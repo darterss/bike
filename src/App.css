@@ -40,7 +40,7 @@
     flex-direction: column;
     text-align: center;
     align-items: center;
-    margin-bottom: 40px;
+    margin-bottom: 43px;
 }
 
 .footer {
@@ -70,16 +70,6 @@ a:hover {
     color: darkred;
 }
 
-@media only screen and (max-width: 675px) {
-    .header {
-        flex-direction: column;
-    }
-
-    .logo {
-        margin-right: 0;
-    }
-}
-
 hr {
     width: 97%;
     border: 1px solid darkgray;
@@ -96,4 +86,20 @@ tr:nth-child(2n+2) {
 
 td:last-child {
     background-color: white;
+}
+
+@media only screen and (max-width: 675px) {
+    .header {
+        flex-direction: column;
+    }
+
+    .logo {
+        margin-right: 0;
+    }
+}
+
+@media only screen and (max-width: 535px) {
+    table {
+        font-size: 13px;
+    }
 }

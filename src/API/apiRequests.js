@@ -3,7 +3,12 @@ import auth from "../services/auth";
 
 axios.defaults.baseURL = 'https://sf-final-project-be.herokuapp.com/api/'
 const $axios = axios.create()
-$axios.defaults.headers.common = auth.getAuthHeaders()
+
+$axios.interceptors.request.use(config => {
+    Object.assign(config, {'headers': auth.getAuthHeaders()})
+    return config
+}, error => Promise.reject(error)
+)
 
 export function getAllOfficers () {
     return $axios
@@ -13,18 +18,20 @@ export function getAllOfficers () {
             alert(err.response.data.message)
         })
 }
+
 export function getOfficer (id, setEmployee) {
     $axios
         .get(`officers/${id}`)
         .then(res => setEmployee(res.data.data))
         .catch(err => alert(err.response.data.message))
 }
+
 export function deleteOfficer (id, getEmployees) {
     $axios
         .delete(`officers/${id}`)
         .then(res => {
             if (res.status === 200) {
-                getAllOfficers(getEmployees)
+                getAllOfficers().then(getEmployees)
             }
         })
         .catch(err => alert(err.response.data.message))
@@ -35,17 +42,19 @@ export function deleteCase (id, setCases) {
         .delete(`cases/${id}`)
         .then(res => {
             if (res.status === 200) {
-                getAllCases (setCases)
+                getAllCases().then(setCases)
             }
         })
         .catch(err => alert(err.response.data.message))
 }
+
 export function getCase (id) {
     return $axios
         .get(`cases/${id}`)
         .then(res => res.data.data)
         .catch(err => alert(err.response.data.message))
 }
+
 export function signIn (setAuthorized, user) {
     axios
         .post('auth/sign_in', user)
@@ -66,6 +75,7 @@ export function changeOfficerData (id, user, navigate) {
         })
         .catch(err => alert(err.response.data.message))
 }
+
 export function changeCaseData (id, editedCase, navigate) {
     $axios
         .put(`cases/${id}`, editedCase)
@@ -74,6 +84,7 @@ export function changeCaseData (id, editedCase, navigate) {
         })
         .catch(err => alert(err.response.data.message))
 }
+
 export function signUp (newEmployee, navigate) {
     $axios
         .post('auth/sign_up', newEmployee)
@@ -101,6 +112,7 @@ export function createCase (theft, navigate) {
             .catch(err => alert(err.response.data.message))
     }
 }
+
 export function getAllCases () {
     return $axios
         .get('cases/')
