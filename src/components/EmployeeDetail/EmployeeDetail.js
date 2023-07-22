@@ -1,18 +1,17 @@
-import {connect} from "react-redux";
 import BackButton from "../BackButton";
 import {useNavigate, useParams} from "react-router-dom";
 import {changeOfficerData, getOfficer} from "../../API/apiRequests";
-import {setEmployee} from "../../redux/actions";
-import {useEffect} from "react";
+import {useEffect, useState} from "react";
 import {Button, Form, Input, InputCheckbox, Label} from "../styled-components/styled-components";
 import {validatePassword} from "../../services/validators";
 
-function EmployeeDetail(props){
+export default function EmployeeDetail(){
     const { id } = useParams()
+    const [employee, setEmployee] = useState(null)
 
     useEffect(() => {
-        getOfficer(id, props.setEmployee)
-        return () => props.setEmployee({})
+        getOfficer(id).then(setEmployee).catch(err => console.log(err))
+        return () => setEmployee(null) // нужно ли это делать?
     }, []
     )
 
@@ -33,7 +32,7 @@ function EmployeeDetail(props){
         changeOfficerData(id, user, navigate)
     }
 
-    if (!props.employee.email) return (
+    if (!employee) return (
         <div>Загрузка...</div>
     )
 
@@ -43,7 +42,7 @@ function EmployeeDetail(props){
             <Form onSubmit={handleSubmit}>
                 <Label>
                     <Input name={'email'} type={'email'}
-                           defaultValue={props.employee.email} disabled={true}/>
+                           defaultValue={employee.email} disabled={true}/>
                     e-mail
                 </Label>
                 <Label>
@@ -57,16 +56,16 @@ function EmployeeDetail(props){
                     Пароль (введите для изменения)
                 </Label>
                 <Label>
-                    <Input name={'firstName'} type={'text'} defaultValue={props.employee.firstName}/>
+                    <Input name={'firstName'} type={'text'} defaultValue={employee.firstName}/>
                     Имя
                 </Label>
                 <Label>
-                    <Input name={'lastName'} type={'text'} defaultValue={props.employee.lastName}/>
+                    <Input name={'lastName'} type={'text'} defaultValue={employee.lastName}/>
                     Фамилия
                 </Label>
                 <Label>
                     <InputCheckbox name={'approved'} type={'checkbox'}
-                           defaultChecked={props.employee.approved}/>
+                           defaultChecked={employee.approved}/>
                     Одобрен
                 </Label>
                 <Button type={'submit'}>Внести изменения</Button>
@@ -75,13 +74,3 @@ function EmployeeDetail(props){
         </>
     )
 }
-
-const mapStateToProps = state => ({
-    employee: state.posts.employee
-})
-
-const mapDispatchToProps = {
-    setEmployee
-}
-
-export default connect (mapStateToProps, mapDispatchToProps)(EmployeeDetail)

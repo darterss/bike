@@ -19,19 +19,19 @@ export function getAllOfficers () {
         })
 }
 
-export function getOfficer (id, setEmployee) {
-    $axios
+export function getOfficer (id) {
+    return $axios
         .get(`officers/${id}`)
-        .then(res => setEmployee(res.data.data))
+        .then(res => res.data.data)
         .catch(err => alert(err.response.data.message))
 }
 
-export function deleteOfficer (id, getEmployees) {
+export function deleteOfficer (id, setEmployees) {
     $axios
         .delete(`officers/${id}`)
         .then(res => {
             if (res.status === 200) {
-                getAllOfficers().then(getEmployees)
+                getAllOfficers().then(setEmployees)
             }
         })
         .catch(err => alert(err.response.data.message))

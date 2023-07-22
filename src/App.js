@@ -1,9 +1,5 @@
 import './App.css';
-import logo from './assets/logo.svg'
-import Authorisation from "./components/Authorisation/Authorisation";
-import Logout from "./components/Logout/Logout";
-import { connect } from 'react-redux'
-import {Link, Route, Routes} from "react-router-dom";
+import {Route, Routes} from "react-router-dom";
 import ReportTheft from "./components/ReportTheft/ReportTheft";
 import Registration from "./components/Registration/Registration";
 import Home from "./components/Home/Home";
@@ -11,35 +7,27 @@ import ListOfThefts from "./components/ListOfTheft/ListOfThefts";
 import ResponsibleStaff from "./components/ResponsibleStaff/ResponsibleStaff";
 import EmployeeDetail from "./components/EmployeeDetail/EmployeeDetail";
 import TheftDetail from "./components/TheftDetail/TheftDetail";
-function App(props) {
+import Header from "./components/Header/Header";
+export default function App() {
 
     return (
         <div className="app">
-            <header className={'header'}>
-                <img alt={'logo'} src={logo} className={'logo'}/>
-                <Link to={'/'}><span>Главная</span></Link>
-                {props.authorized && <Link to={'/list_of_thefts'}><span>Сообщения о кражах</span></Link>}
-                {props.authorized && <Link to="report_theft"><span>Сообщить о краже</span></Link>}
-                {props.authorized && <Link to={'/responsible_staff'}><span>Ответственные сотрудники</span></Link>}
-                {!props.authorized && <Authorisation/>}
-                {props.authorized && <Logout/>}
-            </header>
+            <Header />
             <main className={'main'}>
                 <hr/>
                 <Routes>
-                    <Route path='' element={<Home/>}/>
-                    <Route path={'/report_theft'} element={<ReportTheft/>}/>
-                    <Route path={'/registration'} element={<Registration/>}/>
+                    <Route path='' element={<Home />}/>
+                    <Route path={'/report_theft'} element={<ReportTheft />} />
+                    <Route path={'/registration'} element={<Registration />} />
                     <Route path={'/responsible_staff/'}>
-                        <Route index element={<ResponsibleStaff/>}/>
-                        <Route path={":id"} element={<EmployeeDetail/>}/>
+                        <Route index element={<ResponsibleStaff />} />
+                        <Route path={":id"} element={<EmployeeDetail />} />
                     </Route>
                     <Route path={'/list_of_thefts/'}>
-                        <Route index element={<ListOfThefts/>}/>
-                        <Route path={":id"} element={<TheftDetail/>}/>
+                        <Route index element={<ListOfThefts />} />
+                        <Route path={":id"} element={<TheftDetail />} />
                     </Route>
                 </Routes>
-
             </main>
             <footer className={'footer'}>
                 <hr/>
@@ -48,11 +36,3 @@ function App(props) {
         </div>
     );
 }
-
-function mapStateToProps(state) {
-    return {
-        authorized: state.app.authorized
-    }
-}
-
-export default connect(mapStateToProps)(App)

@@ -28,10 +28,8 @@ function Authorisation(props) {
 
     return (
         <Form onSubmit={handleSubmit}>
-            <Input name={'email'} placeholder={'имя пользователя'} type={"text"}
-                   required={true}/>
-            <Input name={'password'} placeholder={'пароль'} type={"password"}
-                   required={true}/>
+            <Input name={'email'} placeholder={'имя пользователя'} type={"text"} required />
+            <Input name={'password'} placeholder={'пароль'} type={"password"} required />
             <button type={'submit'}>Войти</button>
             <Link to={'/registration'}>Регистрация</Link>
         </Form>
